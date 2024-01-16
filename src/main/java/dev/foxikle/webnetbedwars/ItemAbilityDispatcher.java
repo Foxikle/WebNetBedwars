@@ -1,6 +1,5 @@
 package dev.foxikle.webnetbedwars;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -46,11 +45,6 @@ public class ItemAbilityDispatcher {
                 }
             }
             case "SPONGE" -> {
-                event.setCancelled(false);
-                return;
-            }
-            case "WATER_BUCKET" -> {
-                Bukkit.getScheduler().runTaskLater(plugin, () -> event.getItem().setAmount(0), 1);
                 event.setCancelled(false);
                 return;
             }

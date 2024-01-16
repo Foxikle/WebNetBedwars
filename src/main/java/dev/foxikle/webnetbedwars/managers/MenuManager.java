@@ -1414,7 +1414,7 @@ public class MenuManager {
                     if (plugin.getGameManager().getPlayerInventoryManager().takeItem("GOLD", 3, event.getPlayer())) {
                         if (plugin.getGameManager().getPlayerInventoryManager().hasSpace(event.getPlayer())) {
                             event.getPlayer().getInventory().addItem(Items.GOLDEN_APPLE.clone());
-                            event.getPlayer().sendMessage(ChatColor.GREEN + "You bought a Water Bucket!");
+                            event.getPlayer().sendMessage(ChatColor.GREEN + "You bought a Golden Apple!");
                             event.getPlayer().playSound(event.getPlayer().getEyeLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1f);
                         } else {
                             event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, SoundCategory.MASTER, 1, 1);

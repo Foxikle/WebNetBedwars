@@ -63,8 +63,6 @@ public class BridgeEggRunnable extends BukkitRunnable {
     private void placeSegment(Location location) {
         var segmentRaytrace = new BlockIterator(location, 0, 1);
         replaceNonSolidBlocks(segmentRaytrace);
-
-        location.getWorld().playSound(location, Sound.BLOCK_LAVA_POP, 2.0f, 3.0f);
     }
 
     private void replaceNonSolidBlocks(Iterator<Block> blocks) {
@@ -73,8 +71,7 @@ public class BridgeEggRunnable extends BukkitRunnable {
 
     private void setData(Block block) {
         if (block.getType() == Material.AIR) {
-            block.setBlockData(blockData);
-            block.setMetadata("blockdata", new FixedMetadataValue(plugin, true));
+            plugin.getGameManager().getWorldManager().setBlock(blockData.getMaterial(), block.getLocation());
             Bukkit.getScheduler().runTaskLater(plugin, () -> block.setType(Material.AIR), degradeTime);
             new BlockDamageRunnable(degradeTime, block.getLocation()).runTaskTimerAsynchronously(plugin, 0, 1);
         }

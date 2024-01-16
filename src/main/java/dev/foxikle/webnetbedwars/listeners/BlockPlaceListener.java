@@ -2,6 +2,7 @@ package dev.foxikle.webnetbedwars.listeners;
 
 import dev.foxikle.webnetbedwars.WebNetBedWars;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,6 +22,10 @@ public class BlockPlaceListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent e){
         if(e.getBlockPlaced().getType() == Material.SPONGE) {
             Bukkit.getScheduler().runTaskLater(plugin,  () -> e.getBlockPlaced().setType(AIR), 1);
+        }
+        if(!plugin.getGameManager().getWorldManager().isValidPlacementLocation(e.getBlockPlaced().getLocation(), 5.0)) {
+            e.setCancelled(true);
+            e.getPlayer().sendMessage(ChatColor.RED + "You cannot place a block here!");
         }
         e.getBlock().setMetadata("blockdata", new FixedMetadataValue(plugin, true));
     }

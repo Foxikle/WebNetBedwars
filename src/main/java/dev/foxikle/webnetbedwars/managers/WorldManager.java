@@ -13,10 +13,10 @@ import dev.foxikle.webnetbedwars.WebNetBedWars;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 import static org.bukkit.Material.AIR;
@@ -552,14 +552,45 @@ public class WorldManager {
     }
 
     // boolean vararg because lazy
-    private void setBlock(Material material, Location loc, boolean... breakable) {
-        Block b = loc.getBlock();
-        if(b.getType() == AIR) {
-            b.getWorld().playSound(loc, Sound.ENTITY_PLAYER_BURP, .5F, .3F);
-            b.setType(material, true);
+    public void setBlock(Material material, Location loc, boolean... breakable) {
+        if(isValidPlacementLocation(loc, 7.0)) {
+            Block b = loc.getBlock();
+            if (b.getType() == AIR) {
+                b.getWorld().playSound(loc, Sound.ENTITY_PLAYER_BURP, .5F, .3F);
+                b.setType(material, true);
+            }
+            if (breakable.length < 1) {
+                b.setMetadata("blockdata", new FixedMetadataValue(plugin, true));
+            }
         }
-        if(breakable.length < 1) {
-            b.setMetadata("blockdata", new FixedMetadataValue(plugin, true));
-        }
+    }
+
+    public boolean isValidPlacementLocation(Location loc, double distance) {
+        AtomicBoolean tooClose = new AtomicBoolean(false);
+        plugin.getGameManager().getTeamlist().forEach(team -> {
+            if( team.spawnLocation().distance(loc) <= distance)
+                tooClose.set(true);
+        });
+
+        plugin.getGameManager().getTeamlist().forEach(team -> {
+            if( team.generatorLocation().distance(loc) <= distance)
+                tooClose.set(true);
+        });
+
+        plugin.getGameManager().getTeamlist().forEach(team -> {
+            if( team.itemShopLocation().distance(loc) <= distance)
+                tooClose.set(true);
+        });
+
+        plugin.getGameManager().getTeamlist().forEach(team -> {
+            if( team.teamShopLocation().distance(loc) <= distance)
+                tooClose.set(true);
+        });
+
+        plugin.getGameManager().getTeamlist().forEach(team -> {
+            if( team.chestLocation().distance(loc) <= distance)
+                tooClose.set(true);
+        });
+        return !tooClose.get();
     }
 }

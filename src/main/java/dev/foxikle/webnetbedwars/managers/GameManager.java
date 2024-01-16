@@ -136,11 +136,22 @@ public class GameManager {
     public void freeze() {
         beforeFrozen = gameState;
         gameState = GameState.FROZEN;
+        timer.cancel();
     }
 
     public void thaw() {
         gameState = beforeFrozen;
         beforeFrozen = null;
+        timer = new BukkitRunnable() {
+            @Override
+            public void run() {
+                secondsToNext--;
+                if(secondsToNext == 0) {
+                    setGameState(nextState);
+                }
+            }
+        };
+        timer.runTaskTimer(plugin, 0, 20);
     }
 
     public void start() {

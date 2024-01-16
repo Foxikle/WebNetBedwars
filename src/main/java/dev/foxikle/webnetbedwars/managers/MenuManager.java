@@ -489,6 +489,7 @@ public class MenuManager {
                     if (event.getAction() == InventoryAction.COLLECT_TO_CURSOR) return ActionResponse.DONE;
                     if (plugin.getGameManager().getPlayerInventoryManager().takeItem("IRON", 10, event.getPlayer())) {
                         if (plugin.getGameManager().getPlayerInventoryManager().hasSpace(event.getPlayer())) {
+                            plugin.getGameManager().getPlayerInventoryManager().takeItem("DEFAULT_SWORD", 1, event.getPlayer());
                             event.getPlayer().getInventory().addItem(Items.STONE_SWORD.clone());
                             event.getPlayer().sendMessage(ChatColor.GREEN + "You bought a Stone Sword!");
                         } else {
@@ -508,6 +509,7 @@ public class MenuManager {
                     if (event.getAction() == InventoryAction.COLLECT_TO_CURSOR) return ActionResponse.DONE;
                     if (plugin.getGameManager().getPlayerInventoryManager().takeItem("GOLD", 7, event.getPlayer())) {
                         if (plugin.getGameManager().getPlayerInventoryManager().hasSpace(event.getPlayer())) {
+                            plugin.getGameManager().getPlayerInventoryManager().takeItem("DEFAULT_SWORD", 1, event.getPlayer());
                             event.getPlayer().getInventory().addItem(Items.IRON_SWORD.clone());
                             event.getPlayer().sendMessage(ChatColor.GREEN + "You bought an Iron Sword!");
                         } else {
@@ -527,6 +529,7 @@ public class MenuManager {
                     if (event.getAction() == InventoryAction.COLLECT_TO_CURSOR) return ActionResponse.DONE;
                     if (plugin.getGameManager().getPlayerInventoryManager().takeItem("EMERALD", 6, event.getPlayer())) {
                         if (plugin.getGameManager().getPlayerInventoryManager().hasSpace(event.getPlayer())) {
+                            plugin.getGameManager().getPlayerInventoryManager().takeItem("DEFAULT_SWORD", 1, event.getPlayer());
                             event.getPlayer().getInventory().addItem(Items.DIAMOND_SWORD.clone());
                             event.getPlayer().sendMessage(ChatColor.GREEN + "You bought a Diamond Sword!");
                         } else {

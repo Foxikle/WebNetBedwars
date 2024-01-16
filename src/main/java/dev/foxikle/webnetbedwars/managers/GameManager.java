@@ -23,6 +23,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wither;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -390,6 +391,30 @@ public class GameManager {
                 } else {
                     statsManager.addPlayerKill(killer.getUniqueId());
                     message += ChatColor.GRAY + " was slain by " + ChatColor.translateAlternateColorCodes('&', getPlayerTeam(killer.getUniqueId()).prefix()) + killer.getName();
+
+                    int emeralds = playerInventoryManager.itemCount(dead, "EMERALD");
+                    int diamonds = playerInventoryManager.itemCount(dead, "DIAMOND");
+                    int gold = playerInventoryManager.itemCount(dead, "GOLD");
+                    int iron = playerInventoryManager.itemCount(dead, "IRON");
+
+                    if(emeralds >= 1) killer.sendMessage(ChatColor.DARK_GREEN + "+" + emeralds + " Emeralds");
+                    if(diamonds >= 1) killer.sendMessage(ChatColor.AQUA + "+" + diamonds + " Diamonds");
+                    if(gold >= 1) killer.sendMessage(ChatColor.GOLD + "+" + gold + " Gold");
+                    if(iron >= 1) killer.sendMessage(ChatColor.GRAY + "+" + iron + " Iron");
+
+                    ItemStack em = Items.EMERALD.clone();
+                    em.setAmount(emeralds);
+
+                    ItemStack dia = Items.DIAMOND.clone();
+                    dia.setAmount(diamonds);
+
+                    ItemStack goldItem = Items.GOLD.clone();
+                    goldItem.setAmount(gold);
+
+                    ItemStack ironItem = Items.IRON.clone();
+                    ironItem.setAmount(iron);
+
+                    killer.getInventory().addItem(em, dia, goldItem, ironItem);
                 }
             }
             case FALL -> message += ChatColor.GRAY + " has fallen to their death";

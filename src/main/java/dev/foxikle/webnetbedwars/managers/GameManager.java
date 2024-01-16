@@ -17,10 +17,13 @@ import dev.foxikle.webnetbedwars.data.objects.Team;
 import dev.foxikle.webnetbedwars.runnables.RespawnRunnable;
 import dev.foxikle.webnetbedwars.utils.Items;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Wither;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -59,7 +62,12 @@ public class GameManager {
     private final PlayerInventoryManager playerInventoryManager;
     private final GeneratorManager generatorManager;
 
+    private int secondsToNext = 0;
+    private GameState nextState = GameState.PLAY;
+
     public boolean STARTED = false;
+    public boolean ENDED = false;
+    private BukkitRunnable timer;
 
     public GameManager(WebNetBedWars plugin) {
         this.plugin = plugin;
@@ -112,6 +120,15 @@ public class GameManager {
                 }
             }, 1);
         });
+        timer = new BukkitRunnable() {
+            @Override
+            public void run() {
+                secondsToNext--;
+                if(secondsToNext == 0) {
+                    setGameState(nextState);
+                }
+            }
+        };
     }
 
     public void freeze() {
@@ -128,6 +145,7 @@ public class GameManager {
         worldManager.worldSetup();
         worldManager.removeSpawnPlatform();
         STARTED = true;
+        timer.runTaskTimer(plugin, 0, 20);
         setGameState(GameState.PLAY);
         generatorManager.registerTeamGenerators();
         generatorManager.registerDiamondGenerators();
@@ -155,6 +173,7 @@ public class GameManager {
 
                     p.setInvulnerable(false);
                     p.getInventory().addItem(Items.DEFAULT_SWORD);
+                    p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
                     playerInventoryManager.setArmor(p, team, ArmorLevel.NONE);
                 }
             });
@@ -245,7 +264,41 @@ public class GameManager {
     }
 
     private void setGameState(GameState gameState) {
+        if(gameState != GameState.FROZEN)
+            secondsToNext = gameState.getDuration();
         this.gameState = gameState;
+        switch (gameState) {
+            case WAITING -> {
+                nextState = GameState.PLAY;
+            }
+            case PLAY -> {
+                nextState = GameState.DEATHMATCH;
+            }
+            case DEATHMATCH -> {
+                // beds broken
+                teamlist.forEach(team -> {
+                    if(beds.get(team)) {
+                        breakBed(team);
+                    }
+                });
+
+                Bukkit.broadcastMessage(ChatColor.YELLOW + "All beds have been BROKEN!");
+                nextState = GameState.SUDDEN_DEATH;
+            }
+            case SUDDEN_DEATH -> {
+                teamlist.forEach(team -> {
+                    Wither dragon = team.spawnLocation().getWorld().spawn(team.spawnLocation().clone().subtract(0, -1, 0), Wither.class);
+                    if(dragon.getBossBar() != null)
+                        dragon.getBossBar().setVisible(false);
+                });
+                nextState = GameState.ENDED;
+            }
+            case ENDED -> {
+                if(!ENDED)
+                    endGameinDraw();
+                nextState = GameState.CLEANUP;
+            }
+        }
     }
 
     public StatsManager getStatsManager() {
@@ -293,14 +346,31 @@ public class GameManager {
     }
 
     public void breakBed(Player player, Team t) {
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1000f, 1f);
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1000f, 1f);
         Bukkit.broadcastMessage(getPlayerTeam(player.getUniqueId()).color() + player.getName() + ChatColor.YELLOW + " destroyed " + t.color() + t.displayName() + ChatColor.YELLOW + "'s bed!");
-        // todo: display animations, messages, etc.
+        getPlayerTeams().get(t).forEach(uuid -> {
+            Player p = Bukkit.getPlayer(uuid);
+            if(p != null && p.isOnline()) {
+                p.sendTitle(ChatColor.RED + "" + ChatColor.BOLD + "BED DESTROYED!", "You will no longer respawn!", 10, 50, 10);
+            }
+        });
+        beds.put(t, false);
+    }
+
+    public void breakBed(Team t) {
+        getPlayerTeams().get(t).forEach(uuid -> {
+            Player player = Bukkit.getPlayer(uuid);
+            if(player != null && player.isOnline()) {
+                player.sendTitle(ChatColor.RED + "" + ChatColor.BOLD + "BED DESTROYED!", "You will no longer respawn!", 10, 50, 10);
+                player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1F, 1F);
+            }
+        });
         beds.put(t, false);
     }
 
     public void kill(Player dead, @Nullable Player killer, EntityDamageEvent.DamageCause cause) {
         if (spectators.contains(dead.getUniqueId())) return;
+        if(ENDED) return;
         alivePlayers.remove(dead.getUniqueId());
         statsManager.addPlayerDeath(dead.getUniqueId());
 
@@ -324,13 +394,14 @@ public class GameManager {
             }
             case FALL -> message += ChatColor.GRAY + " has fallen to their death";
             case FIRE, FIRE_TICK -> message += ChatColor.GRAY + " was roasted like a turkey";
-            case LAVA -> message += ChatColor.GRAY + " discovered lava is hot";
-            case VOID -> message += ChatColor.GRAY + " fell into the abyss";
+            case LAVA -> message += ChatColor.GRAY + " discovered lava is, in fact, hot";
+            case VOID -> message += ChatColor.GRAY + " fell into the etherial abyss";
             case FREEZE -> message += ChatColor.GRAY + " turned into an ice cube";
             case DROWNING -> message += ChatColor.GRAY + " forgot how to swim";
             case ENTITY_EXPLOSION, BLOCK_EXPLOSION ->
                     message += ChatColor.GRAY + " went " + ChatColor.RED + "" + ChatColor.BOLD + "BOOM!";
             case PROJECTILE -> message += ChatColor.GRAY + " was remotley terminated";
+            case CUSTOM -> message += " died.";
             default -> {
                 plugin.getLogger().info(String.valueOf(cause));
                 message += ChatColor.GRAY + " died under mysterious circumstances";
@@ -363,6 +434,8 @@ public class GameManager {
     public void respawnPlayer(Player dead) {
         dead.clearActivePotionEffects();
         dead.setGameMode(GameMode.SURVIVAL);
+        dead.getInventory().addItem(Items.DEFAULT_SWORD);
+        dead.setHealth(dead.getMaxHealth());
         dead.setNoDamageTicks(100);// make them invincible for 5 sec
         dead.teleport(getPlayerTeam(dead.getUniqueId()).spawnLocation());
 
@@ -438,6 +511,8 @@ public class GameManager {
         }
 
         if (emptyTeams >= teamlist.size() - 1) {
+            ENDED = true;
+            setGameState(GameState.ENDED);
             playerTeams.forEach((team, uuids) -> {
                 if (emptyTeamList.contains(team)) {
                     uuids.forEach(uuid -> {
@@ -456,5 +531,19 @@ public class GameManager {
                 }
             });
         }
+    }
+
+    public void endGameinDraw() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.sendTitle(ChatColor.RED + "" + ChatColor.BOLD + "GAME OVER!", "This was was a draw!", 10, 120, 0);
+        }
+        ENDED = true;
+        setGameState(GameState.ENDED);
+    }
+
+    public String getTimeToNextFormatted() {
+        int mins = secondsToNext / 60;
+        int seconds = secondsToNext % 60;
+        return mins + ":" + (seconds <= 9 ? "0" : "") + seconds;
     }
 }

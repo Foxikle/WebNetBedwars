@@ -25,7 +25,8 @@ public class ItemPickupListener implements Listener {
                 player.getNearbyEntities(3, 3, 3).forEach(entity -> {
                     if(entity instanceof Player p) {
                         if(plugin.getGameManager().spectators.contains(p.getUniqueId())) return;
-                        p.getInventory().addItem(event.getItem().getItemStack());
+                        if(plugin.getGameManager().getPlayerTeam(p.getUniqueId()) == plugin.getGameManager().getPlayerTeam(player.getUniqueId()))
+                            p.getInventory().addItem(event.getItem().getItemStack());
                     }
                 });
             }

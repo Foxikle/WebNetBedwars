@@ -5,6 +5,7 @@ import dev.foxikle.customnpcs.api.NPCApi;
 import dev.foxikle.webnetbedwars.commands.DebugCommand;
 import dev.foxikle.webnetbedwars.commands.ItemCommand;
 import dev.foxikle.webnetbedwars.commands.ItemShopCommand;
+import dev.foxikle.webnetbedwars.commands.TeamShopCommand;
 import dev.foxikle.webnetbedwars.listeners.*;
 import dev.foxikle.webnetbedwars.managers.GameManager;
 import me.flame.menus.menu.Menus;
@@ -136,7 +137,8 @@ public final class WebNetBedWars extends JavaPlugin {
         getCommand("debug").setExecutor(new DebugCommand(this));
         getCommand("item").setExecutor(new ItemCommand());
         getCommand("item").setAliases(List.of("i"));
-        getCommand("openitemshop").setExecutor( new ItemShopCommand(this));
+        getCommand("openitemshop").setExecutor(new ItemShopCommand(this));
+        getCommand("openteamshop").setExecutor(new TeamShopCommand(this));
     }
 
     public GameManager getGameManager() {

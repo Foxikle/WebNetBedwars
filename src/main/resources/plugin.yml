@@ -18,3 +18,5 @@ commands:
       - i
   openitemshop:
     description: Opens the item shop
+  openteamshop:
+    description: Opens the team shop

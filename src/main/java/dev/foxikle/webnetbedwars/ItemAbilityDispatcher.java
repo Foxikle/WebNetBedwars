@@ -1,11 +1,16 @@
 package dev.foxikle.webnetbedwars;
 
+import dev.foxikle.webnetbedwars.utils.Items;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+
+import static org.bukkit.Bukkit.getPlayer;
 
 public class ItemAbilityDispatcher {
     private final WebNetBedWars plugin;
@@ -46,11 +51,6 @@ public class ItemAbilityDispatcher {
                 }
             }
             case "SPONGE" -> {
-                event.setCancelled(false);
-                return;
-            }
-            case "WATER_BUCKET" -> {
-                Bukkit.getScheduler().runTaskLater(plugin, () -> event.getItem().setAmount(0), 1);
                 event.setCancelled(false);
                 return;
             }

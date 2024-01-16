@@ -4,18 +4,20 @@ import dev.foxikle.webnetbedwars.WebNetBedWars;
 import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ScoreboardManager {
     private final GameManager gameManager;
     private final WebNetBedWars plugin;
     public int taskID;
-    private final HashMap<UUID, FastBoard> boards = new HashMap();
+    private final HashMap<UUID, FastBoard> boards = new HashMap<>();
 
     public ScoreboardManager(GameManager gameManager, WebNetBedWars plugin) {
         this.gameManager = gameManager;
@@ -81,22 +83,104 @@ public class ScoreboardManager {
                 List<String> scoreboardArgs = new ArrayList<>();
                 scoreboardArgs.add(ChatColor.GRAY + plugin.getPluginMeta().getVersion());
                 scoreboardArgs.add("");
-                scoreboardArgs.add("Time: %TIME%");
+                scoreboardArgs.add("Deathmatch: " + ChatColor.GREEN + plugin.getGameManager().getTimeToNextFormatted());
                 scoreboardArgs.add("Map: " + ChatColor.GREEN + plugin.getConfig().getString("Map"));
                 scoreboardArgs.add("");
                 plugin.getGameManager().getTeamlist().forEach(team -> {
-                    // todo: check if team is eliminated, or has final kills
+                    AtomicInteger alivePlayers = new AtomicInteger();
+                    plugin.getGameManager().getPlayerTeams().get(team).forEach(uuid1 -> {
+                        if (Bukkit.getPlayer(uuid1) != null && Bukkit.getPlayer(uuid1).getGameMode() != GameMode.ADVENTURE) {
+                            alivePlayers.getAndIncrement();
+                        }
+                    });
                     String s = "";
                     s += ChatColor.translateAlternateColorCodes('&', team.prefix()) + ChatColor.RESET + team.displayName() + " ";
-                    if (plugin.getGameManager().getBeds().get(team)) s += ChatColor.GREEN + "✔";
-                    else s += ChatColor.RED + "✘";
-                    if(plugin.getGameManager().getPlayerTeam(uuid) == team) s += ChatColor.GRAY + " YOU";
+                    if (plugin.getGameManager().getBeds().get(team) && !plugin.getGameManager().getPlayerTeams().get(team).isEmpty()) {
+                        s += ChatColor.GREEN + "✔";
+                    } else if (alivePlayers.get() >= 1) {
+                        s += team.color() + String.valueOf(alivePlayers.get());
+                    } else {
+                        s += ChatColor.RED + "✘";
+                    }
+                    if (plugin.getGameManager().getPlayerTeam(uuid) == team) s += ChatColor.GRAY + " YOU";
                     scoreboardArgs.add(s);
                 });
                 scoreboardArgs.add("");
                 scoreboardArgs.add(ChatColor.YELLOW + plugin.getConfig().getString("ServerIP"));
                 board.updateLines(scoreboardArgs);
             });
+            case DEATHMATCH -> boards.forEach((uuid, board) -> {
+                List<String> scoreboardArgs = new ArrayList<>();
+                scoreboardArgs.add(ChatColor.GRAY + plugin.getPluginMeta().getVersion());
+                scoreboardArgs.add("");
+                scoreboardArgs.add("Sudden Death: " + ChatColor.GREEN + plugin.getGameManager().getTimeToNextFormatted());
+                scoreboardArgs.add("Map: " + ChatColor.GREEN + plugin.getConfig().getString("Map"));
+                scoreboardArgs.add("");
+                plugin.getGameManager().getTeamlist().forEach(team -> {
+                    AtomicInteger alivePlayers = new AtomicInteger();
+                    plugin.getGameManager().getPlayerTeams().get(team).forEach(uuid1 -> {
+                        if (Bukkit.getPlayer(uuid1) != null && Bukkit.getPlayer(uuid1).getGameMode() != GameMode.ADVENTURE) {
+                            alivePlayers.getAndIncrement();
+                        }
+                    });
+                    String s = "";
+                    s += ChatColor.translateAlternateColorCodes('&', team.prefix()) + ChatColor.RESET + team.displayName() + " ";
+                    if (plugin.getGameManager().getBeds().get(team) && !plugin.getGameManager().getPlayerTeams().get(team).isEmpty()) {
+                        s += ChatColor.GREEN + "✔";
+                    } else if (alivePlayers.get() >= 1) {
+                        s += team.color() + String.valueOf(alivePlayers.get());
+                    } else {
+                        s += ChatColor.RED + "✘";
+                    }
+                    if (plugin.getGameManager().getPlayerTeam(uuid) == team) s += ChatColor.GRAY + " YOU";
+                    scoreboardArgs.add(s);
+                });
+                scoreboardArgs.add("");
+                scoreboardArgs.add(ChatColor.YELLOW + plugin.getConfig().getString("ServerIP"));
+                board.updateLines(scoreboardArgs);
+            });
+            case SUDDEN_DEATH -> boards.forEach((uuid, board) -> {
+                List<String> scoreboardArgs = new ArrayList<>();
+                scoreboardArgs.add(ChatColor.GRAY + plugin.getPluginMeta().getVersion());
+                scoreboardArgs.add("");
+                scoreboardArgs.add("Game Ends: " + ChatColor.GREEN + plugin.getGameManager().getTimeToNextFormatted());
+                scoreboardArgs.add("Map: " + ChatColor.GREEN + plugin.getConfig().getString("Map"));
+                scoreboardArgs.add("");
+                plugin.getGameManager().getTeamlist().forEach(team -> {
+                    AtomicInteger alivePlayers = new AtomicInteger();
+                    plugin.getGameManager().getPlayerTeams().get(team).forEach(uuid1 -> {
+                        if (Bukkit.getPlayer(uuid1) != null && Bukkit.getPlayer(uuid1).getGameMode() != GameMode.ADVENTURE) {
+                            alivePlayers.getAndIncrement();
+                        }
+                    });
+                    String s = "";
+                    s += ChatColor.translateAlternateColorCodes('&', team.prefix()) + ChatColor.RESET + team.displayName() + " ";
+                    if (plugin.getGameManager().getBeds().get(team) && !plugin.getGameManager().getPlayerTeams().get(team).isEmpty()) {
+                        s += ChatColor.GREEN + "✔";
+                    } else if (alivePlayers.get() >= 1) {
+                        s += team.color() + String.valueOf(alivePlayers.get());
+                    } else {
+                        s += ChatColor.RED + "✘";
+                    }
+                    if (plugin.getGameManager().getPlayerTeam(uuid) == team) s += ChatColor.GRAY + " YOU";
+                    scoreboardArgs.add(s);
+                });
+                scoreboardArgs.add("");
+                scoreboardArgs.add(ChatColor.YELLOW + plugin.getConfig().getString("ServerIP"));
+                board.updateLines(scoreboardArgs);
+            });
+            case ENDED -> boards.forEach((uuid, board) -> board.updateLines(
+                    List.of(
+                            ChatColor.GRAY + plugin.getPluginMeta().getVersion(),
+                            "",
+                            "To Lobby: " + ChatColor.GREEN + plugin.getGameManager().getTimeToNextFormatted(),
+                            ChatColor.RED + "GAME OVER!",
+                            "Map: " + ChatColor.GREEN + plugin.getConfig().getString("Map"),
+                            "",
+                            "",
+                            ChatColor.YELLOW + plugin.getConfig().getString("ServerIP")
+                    )
+            ));
         }
     }
 }

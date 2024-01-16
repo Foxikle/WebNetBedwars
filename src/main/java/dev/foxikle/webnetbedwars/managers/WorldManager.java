@@ -435,10 +435,11 @@ public class WorldManager {
     }
 
     public void worldSetup() {
-        World test = Bukkit.getWorld(plugin.getConfig().getString("MapName"));
-        test.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        test.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-        test.setTime(6000);}
+        World world = Bukkit.getWorld(plugin.getConfig().getString("MapName"));
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        world.setGameRule(GameRule.DO_FIRE_TICK, false);
+        world.setTime(6000);}
 
     public CompletableFuture<SlimeWorld> fetchWorld() {
         this.plugin.getLogger().info("Fetching World");

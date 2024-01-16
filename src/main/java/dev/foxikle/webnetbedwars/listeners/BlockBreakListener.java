@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -20,6 +21,7 @@ public class BlockBreakListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
         if(e.getPlayer().getGameMode() == GameMode.CREATIVE) return;
+        if(e.getBlock().getType() == Material.FIRE) return;
         if(plugin.getGameManager().spectators.contains(e.getPlayer().getUniqueId())){
             e.getPlayer().sendMessage(ChatColor.RED + "You cannot do this as a spectator!");
             e.setCancelled(true);

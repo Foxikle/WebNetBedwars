@@ -42,6 +42,10 @@ public class ProjectileShootListener implements Listener {
                     }
                 }
             }.runTaskTimer(plugin, 0, 1);
+            if(event.getItemStack().getItemMeta().getPersistentDataContainer().has(Items.NAMESPACE)) {
+                String id = event.getItemStack().getItemMeta().getPersistentDataContainer().get(Items.NAMESPACE, PersistentDataType.STRING);
+                trident.getPersistentDataContainer().set(Items.NAMESPACE, PersistentDataType.STRING, id);
+            }
         } else if (event.getProjectile() instanceof Snowball bedbug) {
                 bedbug.setShooter(event.getPlayer());
                 bedbug.getPersistentDataContainer().set(Items.NAMESPACE, PersistentDataType.BOOLEAN, true);

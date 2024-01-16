@@ -225,7 +225,7 @@ public class Items {
     // Fire res, Invis, jump, speed
 
     public static ItemStack FIRE_RESISTENCE_POTION = createPotion("Fire Resistence (60s)", "FIRE_RES_POT", PotionType.FIRE_RESISTANCE, 1200, 1);
-    public static ItemStack INVISIBILITY_POTION = createPotion("Invisibility (30s)", "INVIS_POT", PotionType.INVISIBILITY, 600, 1);
+    public static ItemStack INVISIBILITY_POTION = createPotion("Invisibility (30s)", "INVIS_POT", PotionType.INVISIBILITY, 600, 1, ChatColor.RED + "WARNING:" + ChatColor.GRAY + " Drinking this potion", ChatColor.GRAY + "temporarily removes your armor!");
     public static ItemStack JUMP_BOOST_POTION = createPotion("Jump Boost (60s)", "JUMP_BOOST_POT", PotionType.JUMP, 1200, 5);
     public static ItemStack SPEED_POTION = createPotion("Speed (60s)", "SPEED_POT", PotionType.SPEED, 1200, 2);
     //todo: IDEA: Grappling hook that works kinda like skyblocks moody grappleshot -- could be a global cap, or someth

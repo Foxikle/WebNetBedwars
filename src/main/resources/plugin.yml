@@ -18,3 +18,15 @@ commands:
       - i
   openitemshop:
     description: Opens the item shop
+permissions:
+  webnet.bedwars.*:
+    default: op
+    description: A wildcard permission
+    children:
+      - webnet.bedwars.item_command
+      - webnet.bedwars.debug
+  webnet.bedwars.item_command:
+    description: A permission to use the /item command
+    default: op
+  webnet.bedwars.debug:
+    description: A permission to use the /debug command

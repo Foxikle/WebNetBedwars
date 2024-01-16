@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DebugCommand implements CommandExecutor, TabCompleter {
@@ -76,6 +77,9 @@ public class DebugCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        return List.of("end", "listteams", "start", "freeze", "itemshop", "bedbug", "popup");
+        if(sender.hasPermission("webnet.bedwars.item_command")) {
+            return List.of("end", "listteams", "start", "freeze", "itemshop", "bedbug", "popup");
+        }
+        return new ArrayList<>();
     }
 }

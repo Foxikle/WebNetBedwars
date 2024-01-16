@@ -27,6 +27,9 @@ public class BlockPlaceListener implements Listener {
             e.setCancelled(true);
             e.getPlayer().sendMessage(ChatColor.RED + "You cannot place a block here!");
         }
+        if(e.getBlockReplacedState().getType() != AIR) {
+            e.setCancelled(true);
+        }
         e.getBlock().setMetadata("blockdata", new FixedMetadataValue(plugin, true));
     }
 }

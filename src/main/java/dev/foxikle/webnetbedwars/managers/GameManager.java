@@ -52,7 +52,8 @@ public class GameManager {
 
     private GameState beforeFrozen;
     private GameState gameState;
-
+    private static final String NPC_SKIN_QUESTION_MARK_VALUE = "ewogICJ0aW1lc3RhbXAiIDogMTY5ODcxMzk3ODQzNCwKICAicHJvZmlsZUlkIiA6ICI3NzUwYzFhNTM5M2Q0ZWQ0Yjc2NmQ4ZGUwOWY4MjU0NiIsCiAgInByb2ZpbGVOYW1lIiA6ICJSZWVkcmVsIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2ZkMGRkNTE5NDMwOWY5YTVhMTJiMWUyOTZmMTE0ZTM1MGI2NmU0NzliZDAzMDlkM2JhOTlmMjdmZWMxZTZkNzAiCiAgICB9CiAgfQp9";
+    private static final String NPC_SKIN_QUESTION_MARK_SIGNATURE = "J50Ec/p6guuZl49Psrgp3GF8t7tbexyOwldiPLYGNJWoCEPghyTFnh3ZXNuh6N5U8t1RzoJE1qcFMWNpLjYZ5MLBUvBdQHjZ3PzUG3wd9unAHJmX5D7bZHAfErx0z6pWw0EwvJ3xNsaWYzd/fmtR5nkVbR8GuDClce2FmJJ3icjtjg9BJ2vNEd7GCb+VHYmnqKtwfQAFZ0DlfMAoe0QL1zTZSs5BwGUrh4FuamAEPjv81t19briIPeleMOfcF3/k6I6XTsGU/w2Anv7cvZzT2aq4kO10lSFNqkjOlrmo0kGqKWvojOI1YwuPS3eTI9PH9+ZWMwxiMUfL5tlnoChJ3Red1fXHZC3Gq8fVqiZCxHE/2pU0MDz4f0Cdpm9jZ92r5qmi6aOcZ8ksxwnktYdW+RzbZugwunCrOTEbugxjVjeocl/yssZXkXucnmd4dcSBLE3GsHOJvUVAwWii5KSe8CEkwvdxnzPWZXrMQT9kE8kgP0cLlgq7uOv3cUEH+WGcgENgwWi9g89hVuTHlnVJvRFhdISR4QLME00+dCZS9eriaToawZy4poVYT81ARrYodBbDIa1fB38Vq/oHKI+vHFqIk4iznSUhyjCNHRfGmtoH8FX0+eoQMAFpj34R29Bc6Yb5Cn7LwDB5TbM+AgajHGrmNFACE/lIk0SmKw3s0F0=";
     private static final String NPC_SKIN_VALUE = "ewogICJ0aW1lc3RhbXAiIDogMTY2MjQ2NzA5Njc1NywKICAicHJvZmlsZUlkIiA6ICJmNTgyNGRmNGIwMTU0MDA4OGRhMzUyYTQxODU1MDQ0NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJGb3hHYW1lcjUzOTIiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTI5YWI4YmRiMjI4ZTQ3MjZiNzQ1MzZhY2EwNTlhMTZjYWNjNzBjNThlNGEyZGFhMTQzZDIxOWYzNzRhOGI0YSIKICAgIH0KICB9Cn0=";
     private static final String NPC_SKIN_SIGNATURE = "yKToy4cFqIM5A3JWqXkeOaWjOd8MjAm+ECb1ga8tlBZzGvsLVHVaatVcvdYvLqxeUcWrrGLE8F4cqdVl+XyqUyILjmqw8elFwKCS28fIryuvAMaH28SRjDUsAVtTyt6xHSh2yx30IvuN+OmatcTTYQO0AmTzG6VlrOd4COzfrcOEteZb6yqh43hfxpawlavdQw7LQ3ecFXe5JPINNzXPEbbcAYeV9Gh9j6ej9n2P8KsMcTfEjb+UWh82fLegPt3pBQWdXUJVyh1SualBqVaX8hqk38KbfwtC7A9FWvycY7OacjXOyTeWEqZnGUNwc1YgXnS5EidzG/xXNJz2pgzOBlwtAv80jAXnVQcyJkuhSijSehKvMuEEd1gcY7O3itAdSb0636zjAhcKsqskzUhaRNK8QNpbIowBDA2t4EXaFkGSpBSRrOVthox6MhxDLC+ZKADNuiGEtVgpw6vY5gfulovaIX7wOWGLrxGrA6JsA9Fq7XuwHq8d8k8kI6XNRSxdKoKgHhdmlzjPax/GelXt6a9VkRoagtY8EmnliWyOorIMazjdDKq+QmddHH3sDAeahLtXoCf64Jus8bqqyNL4B0E3HwlKjQ2XZw1v/G9c70uJscaoUgpATwvHg2+dH0uxs2MSkN/GZM3GWbmyerFz+AapDjsZhBhylJ570jcbuS4=";
 
@@ -198,7 +199,7 @@ public class GameManager {
             }
 
             NPC teamShop = new NPC(t.teamShopLocation().getWorld());
-            Settings teamSettings = new Settings(true, false, false, t.teamShopLocation().getYaw(), NPC_SKIN_VALUE, NPC_SKIN_SIGNATURE, "Shop Keeper", "<red><bold>Coming Soon</bold></red>");
+            Settings teamSettings = new Settings(true, false, false, t.teamShopLocation().getYaw(), NPC_SKIN_QUESTION_MARK_VALUE, NPC_SKIN_QUESTION_MARK_SIGNATURE, "Question Mark", "<red><bold>Coming Soon</bold></red>");
 
             teamShop.setPostion(t.teamShopLocation())
                     .setActions(

@@ -20,4 +20,4 @@ public class BucketEmptyListener implements Listener {
     @EventHandler
     public void onBucketEmpty(PlayerBucketEmptyEvent event) {
         BukkitScheduler scheduler = Bukkit.getScheduler();
-        scheduler.runTaskLater(plugin, () -> event.getPlayer().getInventory().removeItem(new ItemStack(Material.BUCKET)), 1 /*<-- the delay */);}}
+        scheduler.runTaskLater(plugin, () -> event.getPlayer().getInventory().removeItem(new ItemStack(Material.BUCKET)), 1 );}}

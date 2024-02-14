@@ -591,6 +591,16 @@ public class WorldManager {
             if( team.chestLocation().distance(loc) <= distance)
                 tooClose.set(true);
         });
+
+        plugin.getGameManager().getGeneratorManager().getDiamondGenerators().forEach(generator -> {
+            if( generator.getSpawnLoc().distance(loc) <= distance)
+                tooClose.set(true);
+        });
+
+        plugin.getGameManager().getGeneratorManager().getEmeraldGenerators().forEach(generator -> {
+            if( generator.getSpawnLoc().distance(loc) <= distance)
+                tooClose.set(true);
+        });
         return !tooClose.get();
     }
 }

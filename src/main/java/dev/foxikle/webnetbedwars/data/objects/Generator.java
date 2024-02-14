@@ -111,4 +111,8 @@ public class Generator {
         this.countDown = display;
         this.countDownFormat = format;
     }
+
+    public Location getSpawnLoc() {
+        return spawnLoc;
+    }
 }

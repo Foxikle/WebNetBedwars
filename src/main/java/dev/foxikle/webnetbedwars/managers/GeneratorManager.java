@@ -15,13 +15,15 @@ import org.bukkit.entity.Display;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GeneratorManager {
     private final WebNetBedWars plugin;
     private final GameManager gameManager;
 
-    private List<Generator> diamondGenerators;
+    private List<Generator> diamondGenerators = new ArrayList<>();
+    private List<Generator> emeraldGenerators = new ArrayList<>();
 
 
     public GeneratorManager(WebNetBedWars plugin, GameManager gameManager) {
@@ -85,6 +87,7 @@ public class GeneratorManager {
             nextSpawn.setBillboard(Display.Billboard.CENTER);
             generator.setCountDown(nextSpawn, nextSpawnStr);
             generator.start();
+            diamondGenerators.add(generator);
         }
     }
 
@@ -119,7 +122,16 @@ public class GeneratorManager {
             nextSpawn.setBillboard(Display.Billboard.CENTER);
             generator.setCountDown(nextSpawn, nextSpawnStr);
             generator.start();
+            emeraldGenerators.add(generator);
         }
+    }
+
+    public List<Generator> getDiamondGenerators() {
+        return diamondGenerators;
+    }
+
+    public List<Generator> getEmeraldGenerators() {
+        return emeraldGenerators;
     }
 }
 

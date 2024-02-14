@@ -583,4 +583,8 @@ public class GameManager {
         int seconds = secondsToNext % 60;
         return mins + ":" + (seconds <= 9 ? "0" : "") + seconds;
     }
+
+    public GeneratorManager getGeneratorManager() {
+        return generatorManager;
+    }
 }

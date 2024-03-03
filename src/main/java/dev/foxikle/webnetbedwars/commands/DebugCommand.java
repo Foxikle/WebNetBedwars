@@ -48,7 +48,7 @@ public class DebugCommand implements CommandExecutor, TabCompleter {
                             }
                         }
                         case "listteams" -> {
-                            plugin.getGameManager().getTeamlist().forEach(team -> player.sendMessage(team.prefix() + team.displayName()));
+                            plugin.getGameManager().getTeamlist().forEach(team -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', team.prefix() + team.displayName())));
                         }
                         case "freeze", "f" -> {
                             if(plugin.getGameManager().getGameState() != GameState.FROZEN){

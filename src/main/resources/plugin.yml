@@ -4,7 +4,7 @@ description: 'stuff'
 authors:
   - Foxikle
   - Webhead1104
-main: dev.foxikle.cytonicbedwars.CytonicBedWars
+main: net.cytonic.cytonicbedwars.CytonicBedWars
 api-version: '1.20'
 depend:
   - CustomNPCs

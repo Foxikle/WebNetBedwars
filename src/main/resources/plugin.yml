@@ -1,10 +1,10 @@
-name: WebNetBedWars
+name: CytonicBedWars
 version: '${version}'
 description: 'stuff'
 authors:
   - Foxikle
   - Webhead1104
-main: dev.foxikle.webnetbedwars.WebNetBedWars
+main: dev.foxikle.cytonicbedwars.CytonicBedWars
 api-version: '1.20'
 depend:
   - CustomNPCs
@@ -21,14 +21,14 @@ commands:
   openteamshop:
     description: Opens the team shop
 permissions:
-  webnet.bedwars.*:
+  cytonic.bedwars.*:
     default: op
     description: A wildcard permission
     children:
-      - webnet.bedwars.item_command
-      - webnet.bedwars.debug
-  webnet.bedwars.item_command:
+      - cytonic.bedwars.item_command
+      - cytonic.bedwars.debug
+  cytonic.bedwars.item_command:
     description: A permission to use the /item command
     default: op
-  webnet.bedwars.debug:
+  cytonic.bedwars.debug:
     description: A permission to use the /debug command

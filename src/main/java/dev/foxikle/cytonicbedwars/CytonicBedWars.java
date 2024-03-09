@@ -1,0 +1,167 @@
+package dev.foxikle.cytonicbedwars;
+
+import com.infernalsuite.aswm.api.SlimePlugin;
+import dev.foxikle.customnpcs.api.NPCApi;
+import dev.foxikle.cytonicbedwars.commands.DebugCommand;
+import dev.foxikle.cytonicbedwars.commands.ItemCommand;
+import dev.foxikle.cytonicbedwars.commands.ItemShopCommand;
+import dev.foxikle.cytonicbedwars.commands.TeamShopCommand;
+import dev.foxikle.cytonicbedwars.listeners.*;
+import dev.foxikle.cytonicbedwars.managers.GameManager;
+import me.flame.menus.menu.Menus;
+import net.minecraft.world.level.block.Blocks;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+
+public final class CytonicBedWars extends JavaPlugin {
+
+    private GameManager gameManager;
+    public static CytonicBedWars INSTANCE;
+    private ItemAbilityDispatcher itemAbilityDispatcher;
+
+    @Override
+    public void onEnable() {
+        SlimePlugin plugin = (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
+        if(plugin == null) {
+            this.getServer().getPluginManager().disablePlugin(this);
+        }
+        INSTANCE = this;
+        File file = new File("plugins/cytonicBedWars/config.yml");
+        if(!file.exists())
+            this.saveResource("config.yml", false);
+
+        gameManager = new GameManager(this);
+        registerCommands();
+        registerListeners();
+        gameManager.setup();
+        NPCApi.initialize();
+        changeBlastResistence();
+        itemAbilityDispatcher = new ItemAbilityDispatcher(this);
+        Menus.init(this);
+        removeAdvancements();
+        Bukkit.reloadData();
+    }
+
+    private void changeBlastResistence(){
+        //aF == resistence
+        Arrays.stream(Blocks.GLASS.getClass().getSuperclass().getSuperclass().getSuperclass().getSuperclass().getDeclaredFields()).forEach(field -> {
+            if(field.getType() == float.class){
+                try {
+                    field.setAccessible(true);
+                    if(field.getName().equals("aF")){
+                        field.setFloat(Blocks.GLASS, 1200.0F);
+
+                        field.setFloat(Blocks.BLACK_STAINED_GLASS, 1200.0F);
+                        field.setFloat(Blocks.WHITE_STAINED_GLASS, 1200.0F);
+                        field.setFloat(Blocks.CYAN_STAINED_GLASS, 1200.0F);
+                        field.setFloat(Blocks.LIGHT_BLUE_STAINED_GLASS, 1200.0F);
+                        field.setFloat(Blocks.BLUE_STAINED_GLASS, 1200.0F);
+                        field.setFloat(Blocks.PINK_STAINED_GLASS, 1200.0F);
+                        field.setFloat(Blocks.PURPLE_STAINED_GLASS, 1200.0F);
+                        field.setFloat(Blocks.LIME_STAINED_GLASS, 1200.0F);
+                        field.setFloat(Blocks.GREEN_STAINED_GLASS, 1200.0F);
+                        field.setFloat(Blocks.RED_STAINED_GLASS, 1200.0F);
+                        field.setFloat(Blocks.ORANGE_STAINED_GLASS, 1200.0F);
+                        field.setFloat(Blocks.YELLOW_STAINED_GLASS, 1200.0F);
+                        field.setFloat(Blocks.LIGHT_GRAY_STAINED_GLASS, 1200.0F);
+                        field.setFloat(Blocks.GRAY_STAINED_GLASS, 1200.0F);
+                        field.setFloat(Blocks.BROWN_STAINED_GLASS, 1200.0F);
+                        field.setFloat(Blocks.MAGENTA_STAINED_GLASS, 1200.0F);
+
+                        field.setFloat(Blocks.BLACK_BED, 1200.0F);
+                        field.setFloat(Blocks.WHITE_BED, 1200.0F);
+                        field.setFloat(Blocks.CYAN_BED, 1200.0F);
+                        field.setFloat(Blocks.LIGHT_BLUE_BED, 1200.0F);
+                        field.setFloat(Blocks.BLUE_BED, 1200.0F);
+                        field.setFloat(Blocks.PINK_BED, 1200.0F);
+                        field.setFloat(Blocks.PURPLE_BED, 1200.0F);
+                        field.setFloat(Blocks.LIME_BED, 1200.0F);
+                        field.setFloat(Blocks.GREEN_BED, 1200.0F);
+                        field.setFloat(Blocks.RED_BED, 1200.0F);
+                        field.setFloat(Blocks.ORANGE_BED, 1200.0F);
+                        field.setFloat(Blocks.YELLOW_BED, 1200.0F);
+                        field.setFloat(Blocks.LIGHT_GRAY_BED, 1200.0F);
+                        field.setFloat(Blocks.GRAY_BED, 1200.0F);
+                        field.setFloat(Blocks.BROWN_BED, 1200.0F);
+                        field.setFloat(Blocks.MAGENTA_BED, 1200.0F);
+                    }
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onDisable() {
+        gameManager.cleanup();
+    }
+
+    private void registerListeners(){
+        getServer().getPluginManager().registerEvents(new DamageListener(this), this);
+        getServer().getPluginManager().registerEvents(new JoinListener(this), this);
+        getServer().getPluginManager().registerEvents(new LeaveListener(this), this);
+        getServer().getPluginManager().registerEvents(new BlockBreakListener(this), this);
+        getServer().getPluginManager().registerEvents(new BlockPlaceListener(this), this);
+        getServer().getPluginManager().registerEvents(new ExplosionListener(this), this);
+        getServer().getPluginManager().registerEvents(new InteractListener(this), this);
+        getServer().getPluginManager().registerEvents(new MoveListener(this), this);
+        getServer().getPluginManager().registerEvents(new GamemodeChangeListener(this), this);
+        getServer().getPluginManager().registerEvents(new ArmorEquipListener(this), this);
+        getServer().getPluginManager().registerEvents(new InventoryClickListener(this), this);
+        getServer().getPluginManager().registerEvents(new DropItemListener(this), this);
+        getServer().getPluginManager().registerEvents(new ProjectileShootListener(this), this);
+        getServer().getPluginManager().registerEvents(new PotionDrinkListener(this), this);
+        getServer().getPluginManager().registerEvents(new SilverfishBurrowListener(this), this);
+        getServer().getPluginManager().registerEvents(new ProjectileLandListener(this), this);
+        getServer().getPluginManager().registerEvents(new BlockDestroyListener(this), this);
+        getServer().getPluginManager().registerEvents(new MobSpawnListener(this), this);
+        getServer().getPluginManager().registerEvents(new ItemMergeListener(this), this);
+        getServer().getPluginManager().registerEvents(new ItemPickupListener(this), this);
+        getServer().getPluginManager().registerEvents(new HungerDepleteListener(this), this);
+        getServer().getPluginManager().registerEvents(new QuitListener(this), this);
+        getServer().getPluginManager().registerEvents(new CraftingListener(this), this);
+        getServer().getPluginManager().registerEvents(new BucketEmptyListener(this), this);
+        getServer().getPluginManager().registerEvents(new SetSpawnPointListener(this), this);
+    }
+
+
+
+    private void registerCommands(){
+        getCommand("debug").setExecutor(new DebugCommand(this));
+        getCommand("item").setExecutor(new ItemCommand());
+        getCommand("item").setAliases(List.of("i"));
+        getCommand("openitemshop").setExecutor(new ItemShopCommand(this));
+        getCommand("openteamshop").setExecutor(new TeamShopCommand(this));
+    }
+
+    public GameManager getGameManager() {
+        return gameManager;
+    }
+
+    public ItemAbilityDispatcher getItemAbilityDispatcher() {
+        return itemAbilityDispatcher;
+    }
+
+    public void removeAdvancements() {
+        Bukkit.spigot().getSpigotConfig().set("advancements.disabled", List.of("*"));
+    }
+
+    public Location getLocation(String path) {
+        return new Location(
+                Bukkit.getWorld(getConfig().getString("MapName")),
+                getConfig().getDouble(path + ".x"),
+                getConfig().getDouble(path + ".y"),
+                getConfig().getDouble(path + ".z"),
+                (float) getConfig().getDouble(path + ".yaw"),
+                (float) getConfig().getDouble(path + ".pitch")
+                );
+
+    }
+}

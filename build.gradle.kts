@@ -32,7 +32,7 @@ dependencies {
 
 group = "dev.foxikle"
 version = "0.01-alpha2"
-description = "WebNet's bedwars plugin"
+description = "Cytonic's bedwars plugin"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 tasks {
@@ -63,7 +63,7 @@ tasks {
     }
 
     reobfJar {
-        outputJar.set(layout.buildDirectory.file(providers.gradleProperty("plugin_dir").get() + "/WebNetBedwars-${project.version}.jar"))
+        outputJar.set(layout.buildDirectory.file(providers.gradleProperty("plugin_dir").get() + "/CytonicBedwars-${project.version}.jar"))
     }
 
     shadowJar {
